@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
+<rfc ipr="trust200902" category="std" docName="draft-dickinson-doh-dohpe-00">
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<?rfc private=""?>
+<?rfc topblock="yes"?>
+<?rfc comments="no"?>
+<front>
+<title abbrev="DoHPE: DoH with Privacy Enhancements">DoHPE: DoH with Privacy Enhancements</title>
+
+<author initials="S." surname="Dickinson" fullname="Sara Dickinson">
+<organization>Sinodun IT</organization>
+<address>
+<postal>
+<street></street>
+<street>Magdalen Centre</street>
+<street>Oxford Science Park</street>
+<city>Oxford</city>
+<code>OX4 4GA</code>
+<country>United Kingdom</country>
+<region></region>
+</postal>
+<phone></phone>
+<email>sara@sinodun.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="W." surname="Toorop" fullname="Willem Toorop">
+<organization>NLnet Labs</organization>
+<address>
+<postal>
+<street></street>
+<street>Science Park 400</street>
+<city>Amsterdam</city>
+<code>1098 XH</code>
+<country>The Netherlands</country>
+<region></region>
+</postal>
+<phone></phone>
+<email>willem@nlnetLabs.nl</email>
+<uri></uri>
+</address>
+</author>
+<date year="2018" month="July" day="17"/>
+
+<area>Art</area>
+<workgroup>doh</workgroup>
+<keyword>DNS</keyword>
+
+
+<abstract>
+<t>This document describes DoHPE (DoH with Privacy Enhancements) - a privacy and
+anonymity profile for DoH <xref target="I-D.ietf-doh-dns-over-https"/> clients. The profile
+provides guidelines on the composition of DoH messages, designed to minimize
+disclosure of identifying information.
+</t>
+</abstract>
+
+
+</front>
+
+<middle>
+
+<section anchor="introduction" title="Introduction">
+<t>The DoH protocol <xref target="I-D.ietf-doh-dns-over-https"/> is currently under development
+with stated potential use cases of:
+</t>
+<t>&quot;... preventing on-path devices from interfering with DNS operations and
+allowing web applications to access DNS information via existing browser APIs in
+a safe way consistent with Cross Origin Resource Sharing (CORS).&quot;
+</t>
+<t>Whilst DoH has clear benefits in terms of encryption, authentication, traffic
+obfuscation and ease of implementation, it introduce new privacy concerns when
+compared with DNS over UDP, TCP or TLS (RFC7858) simply because it introduces a
+new transport layer (HTTPS) that can contain client identifiers (e.g.
+user-agent, accept-language) not present in any existing DNS transport.
+</t>
+<t>The privacy considerations section of that draft state the following:
+</t>
+<t>&quot;The DoH protocol design allows applications to fully leverage the HTTP
+ecosystem, including features that are not enumerated here. Utilizing the full
+set of HTTP features enables DoH to be more than an HTTP tunnel, but at the cost
+of opening up implementations to the full set of privacy considerations of
+HTTP.&quot;
+</t>
+<t>In other words a design choice was made with DoH not to add
+constraints to the protocol on privacy grounds; specific choices of
+functionality verses privacy are left to the implementation.
+</t>
+<t>In the absence of a common standard and with many possible use cases for DoH,
+different application developers are likely to implement this compromise in
+different ways. Monitoring entities could then use the differences to identify
+not only the device but the software originating the DNS queries.
+A similar problem exists for DHCP clients which <xref target="RFC7844"/> attempts to address.
+</t>
+<t>The proposed profile provides a common standard that minimizes information
+disclosure, including the disclosure of implementation identifiers. Whilst
+fingerprinting in the TLS layer is of course also possible, minimising the
+additional differences introduced by HTTPS attempts to provide a DoH profile
+that has parity with DNS-over-TLS from a privacy/anonymity perspective.
+</t>
+<t>One use case for this profile is a client wishing to use DoH to leverage
+several of the key advantages including:
+</t>
+<t>
+<list style="symbols">
+<t>Encryption and authentication of the connection to the server</t>
+<t>Obfuscation of DNS traffic by using HTTPS on port 443 (to preventing on-path
+devices from interfering with DNS operations)</t>
+<t>Ability to optionally use either DNS-over-TLS or DoH servers depending on
+availability, reachability and latency</t>
+</list>
+</t>
+<t>but to:
+</t>
+<t>
+<list style="symbols">
+<t>introduce the minimum possible privacy concerns compared to e.g. DNS-over-TLS</t>
+<t>not 'stand-out' among a DoH client population</t>
+</list>
+</t>
+<t>The cost of this decision is limitations on the HTTPS functionality available to
+the client which for this use case is considered acceptable. An example of such
+a client is a system stub resolver that offers multiple transports for DNS or a
+Tor exit node.
+</t>
+<t>One advantage of standardizing this approach is that users of DoHPE clients will
+have clear privacy expectations which is not necessarily the case with general
+DoH clients because the choice of balancing functionality against privacy is
+implementation specific.
+</t>
+<t>Whilst a simple model using HTTP CONNECT to set up RFC7858 sessions would be an
+option given the privacy centric goal of this specification building on top of
+DoH has several advantages including clients being able to take advantage of
+media-types defined in future DoH specifications.
+</t>
+<t>Two issues need to be taken into account when considering how deployable this profile is:
+</t>
+<t>
+<list style="numbers">
+<t>Interoperability issues in the absence of certain headers might be expected</t>
+<t>Some HTTPS libraries add several headers by default and so implementors will
+need to take care to override this behaviour</t>
+</list>
+</t>
+<t>As with DoH, this document focuses on communication between DNS clients (such as
+operating system stub resolvers) and recursive resolvers.
+</t>
+</section>
+
+<section anchor="terminology" title="Terminology">
+<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
+document are to be interpreted as described in <xref target="RFC8174"/>.
+</t>
+</section>
+
+<section anchor="protocol-specification" title="Protocol specification">
+<t>The protocol specification for DoHPE is that of DoH
+<xref target="I-D.ietf-doh-dns-over-https"/> with the guidelines described in the following
+sections.
+</t>
+
+<section anchor="selection-of-doh-server" title="Selection of DoH server">
+<t>In order that all connections from a given device appear as similar as possible
+DoHPE clients SHOULD by default use a system wide setting for the DoH server if one exists
+and can be discovered.
+</t>
+</section>
+
+<section anchor="https-connections" title="HTTPS connections">
+<t>DoHPE clients SHOULD send queries over connections used solely for DoHPE
+('dedicated DoHPE connections') to avoid mixing with other HTTPS traffic that
+might contain HTTPS messages with client identifiers.
+</t>
+<t>TODO: Consider if DoHPE clients SHOULD expose configuration options for users to select if they
+are willing to fall back to using existing connections for DoHPE queries if
+issues are encountered with the use of dedicated DoHPE connections.
+</t>
+</section>
+
+<section anchor="http-version" title="HTTP version">
+<t>In order that all DoH connections from a device appear as similar as possible
+DoHPE clients MUST use HTTP/2 <xref target="RFC7540"/> or later.
+</t>
+</section>
+
+<section anchor="http-method" title="HTTP method">
+<t>TODO: Consider specifying that DoHPE clients SHOULD use either GET or POST to increase similarity?
+</t>
+</section>
+
+<section anchor="http-headers" title="HTTP headers">
+<t>This profile obviously requires clients to include all mandatory headers as
+specified on <xref target="RFC7540"/> and other applicable specifications.
+<xref target="I-D.ietf-doh-dns-over-https"/> also makes recommendations about the
+&quot;Accept&quot; header which apply to this profile.
+</t>
+
+<section anchor="user-agent" title="User agent">
+<t>DoHPE clients SHOULD omit the user-agent header. DoHPE clients MAY set this
+header to 'DoHPE client' if interoperability issues are encountered.
+</t>
+</section>
+
+<section anchor="other-headers" title="Other headers">
+<t>DoHPE clients SHOULD omit all other headers.
+</t>
+<t>TODO: Consider if DoHPE clients should expose configuration options so users can
+choose to include specific headers if interoperability issues are encountered.
+Note that such configuration could serve to allow fingerprinting.
+</t>
+</section>
+</section>
+
+<section anchor="client-authentication" title="Client authentication">
+<t>HTTP Cookies MUST NOT be sent by DoHPE clients.
+</t>
+</section>
+
+<section anchor="other-http-functionality" title="Other HTTP functionality">
+<t>TODO: What else should be considered here?
+</t>
+</section>
+
+<section anchor="countermeasures-to-traffic-analysis" title="Countermeasures to Traffic Analysis">
+<t>This section makes suggestions for measures that can reduce the
+ability of attackers to infer information pertaining to encrypted
+client queries by other means (e.g., via an analysis of encrypted
+traffic size or via monitoring of the unencrypted traffic from a DNS
+recursive resolver to an authoritative server).
+</t>
+<t>DoHPE clients and servers SHOULD implement the following
+relevant DNS extensions:
+</t>
+<t>
+<list style="symbols">
+<t>Extension Mechanisms for DNS (EDNS(0)) padding <xref target="RFC7830"/>, which
+allows encrypted queries and responses to hide their size, making
+analysis of encrypted traffic harder.</t>
+</list>
+</t>
+<t>Guidance on padding policies for EDNS(0) is provided in
+<xref target="I-D.ietf-dprive-padding-policy"/>.
+</t>
+<t>DoHPE clients SHOULD implement the following relevant DNS
+extensions:
+</t>
+<t>
+<list style="symbols">
+<t>Privacy election per <xref target="RFC7871"/> (&quot;Client Subnet in DNS Queries&quot;).
+If a DoHPE client does not include an edns-client-subnet EDNS0
+option with SOURCE PREFIX-LENGTH set to 0 in a query, the DNS
+server may potentially leak client address information to the
+upstream authoritative DNS servers.  A DoHPE client ought to be able
+to inform the DNS resolver that it does not want any address
+information leaked, and the DNS resolver should honor that
+request.</t>
+</list>
+</t>
+</section>
+</section>
+
+<section anchor="iana-considerations" title="IANA considerations">
+<t>None
+</t>
+</section>
+
+<section anchor="implementations" title="Implementations">
+<t>TODO: Add details of the next release of Stubby that will support DoHPE.
+</t>
+</section>
+
+<section anchor="acknowledgements" title="Acknowledgements">
+<t>Thanks to Stephane Bortzmeyer, Ben Schwartz and many others for initial discussions on this topic.
+</t>
+</section>
+
+<section anchor="changelog" title="Changelog">
+<t>draft-dickinson-doh-dohpe-00
+</t>
+<t>
+<list style="symbols">
+<t>Initial commit</t>
+</list>
+</t>
+</section>
+
+</middle>
+<back>
+<references title="Normative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-doh-dns-over-https.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7540.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
+</references>
+<references title="Informative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-padding-policy.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7830.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7844.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7871.xml"?>
+</references>
+
+</back>
+</rfc>

@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>DoHPE: DoH with Privacy Enhancements</title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+
+  <link href="#rfc.toc" rel="Contents"/>
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
+<link href="#rfc.section.2" rel="Chapter" title="2 Terminology"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 Protocol specification"/>
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 Selection of DoH server"/>
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 HTTPS connections"/>
+<link href="#rfc.section.3.3" rel="Chapter" title="3.3 HTTP version"/>
+<link href="#rfc.section.3.4" rel="Chapter" title="3.4 HTTP method"/>
+<link href="#rfc.section.3.5" rel="Chapter" title="3.5 HTTP headers"/>
+<link href="#rfc.section.3.5.1" rel="Chapter" title="3.5.1 User agent"/>
+<link href="#rfc.section.3.5.2" rel="Chapter" title="3.5.2 Other headers"/>
+<link href="#rfc.section.3.6" rel="Chapter" title="3.6 Client authentication"/>
+<link href="#rfc.section.3.7" rel="Chapter" title="3.7 Other HTTP functionality"/>
+<link href="#rfc.section.3.8" rel="Chapter" title="3.8 Countermeasures to Traffic Analysis"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 IANA considerations"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Implementations"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Acknowledgements"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Changelog"/>
+<link href="#rfc.references" rel="Chapter" title="8 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="8.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="8.2 Informative References"/>
+<link href="#rfc.authors" rel="Chapter"/>
+
+
+  <meta name="generator" content="xml2rfc version 2.5.1 - http://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Dickinson, S. and W. Toorop" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-dickinson-doh-dohpe-00" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-7-17" />
+  <meta name="dct.abstract" content="This document describes DoHPE (DoH with Privacy Enhancements) - a privacy and anonymity profile for DoH " />
+  <meta name="description" content="This document describes DoHPE (DoH with Privacy Enhancements) - a privacy and anonymity profile for DoH " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+  <td class="left">doh</td>
+  <td class="right">S. Dickinson</td>
+</tr>
+<tr>
+  <td class="left">Internet-Draft</td>
+  <td class="right">Sinodun IT</td>
+</tr>
+<tr>
+  <td class="left">Intended status: Standards Track</td>
+  <td class="right">W. Toorop</td>
+</tr>
+<tr>
+  <td class="left">Expires: January 18, 2019</td>
+  <td class="right">NLnet Labs</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">July 17, 2018</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">DoHPE: DoH with Privacy Enhancements<br />
+  <span class="filename">draft-dickinson-doh-dohpe-00</span></p>
+  
+  <h1 id="rfc.abstract">
+  <a href="#rfc.abstract">Abstract</a>
+</h1>
+<p>This document describes DoHPE (DoH with Privacy Enhancements) - a privacy and anonymity profile for DoH <a href="#I-D.ietf-doh-dns-over-https">[I-D.ietf-doh-dns-over-https]</a> clients. The profile provides guidelines on the composition of DoH messages, designed to minimize disclosure of identifying information.  </p>
+<h1 id="rfc.status">
+  <a href="#rfc.status">Status of This Memo</a>
+</h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on January 18, 2019.</p>
+<h1 id="rfc.copyrightnotice">
+  <a href="#rfc.copyrightnotice">Copyright Notice</a>
+</h1>
+<p>Copyright (c) 2018 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
+<li>2.   <a href="#rfc.section.2">Terminology</a></li>
+<li>3.   <a href="#rfc.section.3">Protocol specification</a></li>
+<ul><li>3.1.   <a href="#rfc.section.3.1">Selection of DoH server</a></li>
+<li>3.2.   <a href="#rfc.section.3.2">HTTPS connections</a></li>
+<li>3.3.   <a href="#rfc.section.3.3">HTTP version</a></li>
+<li>3.4.   <a href="#rfc.section.3.4">HTTP method</a></li>
+<li>3.5.   <a href="#rfc.section.3.5">HTTP headers</a></li>
+<ul><li>3.5.1.   <a href="#rfc.section.3.5.1">User agent</a></li>
+<li>3.5.2.   <a href="#rfc.section.3.5.2">Other headers</a></li>
+</ul><li>3.6.   <a href="#rfc.section.3.6">Client authentication</a></li>
+<li>3.7.   <a href="#rfc.section.3.7">Other HTTP functionality</a></li>
+<li>3.8.   <a href="#rfc.section.3.8">Countermeasures to Traffic Analysis</a></li>
+</ul><li>4.   <a href="#rfc.section.4">IANA considerations</a></li>
+<li>5.   <a href="#rfc.section.5">Implementations</a></li>
+<li>6.   <a href="#rfc.section.6">Acknowledgements</a></li>
+<li>7.   <a href="#rfc.section.7">Changelog</a></li>
+<li>8.   <a href="#rfc.references">References</a></li>
+<ul><li>8.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>8.2.   <a href="#rfc.references.2">Informative References</a></li>
+</ul><li><a href="#rfc.authors">Authors' Addresses</a></li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a></h1>
+<p id="rfc.section.1.p.1">The DoH protocol <a href="#I-D.ietf-doh-dns-over-https">[I-D.ietf-doh-dns-over-https]</a> is currently under development with stated potential use cases of: </p>
+<p id="rfc.section.1.p.2">"... preventing on-path devices from interfering with DNS operations and allowing web applications to access DNS information via existing browser APIs in a safe way consistent with Cross Origin Resource Sharing (CORS)." </p>
+<p id="rfc.section.1.p.3">Whilst DoH has clear benefits in terms of encryption, authentication, traffic obfuscation and ease of implementation, it introduce new privacy concerns when compared with DNS over UDP, TCP or TLS (RFC7858) simply because it introduces a new transport layer (HTTPS) that can contain client identifiers (e.g.  user-agent, accept-language) not present in any existing DNS transport.  </p>
+<p id="rfc.section.1.p.4">The privacy considerations section of that draft state the following: </p>
+<p id="rfc.section.1.p.5">"The DoH protocol design allows applications to fully leverage the HTTP ecosystem, including features that are not enumerated here. Utilizing the full set of HTTP features enables DoH to be more than an HTTP tunnel, but at the cost of opening up implementations to the full set of privacy considerations of HTTP." </p>
+<p id="rfc.section.1.p.6">In other words a design choice was made with DoH not to add constraints to the protocol on privacy grounds; specific choices of functionality verses privacy are left to the implementation.  </p>
+<p id="rfc.section.1.p.7">In the absence of a common standard and with many possible use cases for DoH, different application developers are likely to implement this compromise in different ways. Monitoring entities could then use the differences to identify not only the device but the software originating the DNS queries.  A similar problem exists for DHCP clients which <a href="#RFC7844">[RFC7844]</a> attempts to address.  </p>
+<p id="rfc.section.1.p.8">The proposed profile provides a common standard that minimizes information disclosure, including the disclosure of implementation identifiers. Whilst fingerprinting in the TLS layer is of course also possible, minimising the additional differences introduced by HTTPS attempts to provide a DoH profile that has parity with DNS-over-TLS from a privacy/anonymity perspective.  </p>
+<p id="rfc.section.1.p.9">One use case for this profile is a client wishing to use DoH to leverage several of the key advantages including: </p>
+<p/>
+
+<ul>
+  <li>Encryption and authentication of the connection to the server</li>
+  <li>Obfuscation of DNS traffic by using HTTPS on port 443 (to preventing on-path devices from interfering with DNS operations)</li>
+  <li>Ability to optionally use either DNS-over-TLS or DoH servers depending on availability, reachability and latency</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.1.p.11">but to: </p>
+<p/>
+
+<ul>
+  <li>introduce the minimum possible privacy concerns compared to e.g. DNS-over-TLS</li>
+  <li>not 'stand-out' among a DoH client population</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.1.p.13">The cost of this decision is limitations on the HTTPS functionality available to the client which for this use case is considered acceptable. An example of such a client is a system stub resolver that offers multiple transports for DNS or a Tor exit node.  </p>
+<p id="rfc.section.1.p.14">One advantage of standardizing this approach is that users of DoHPE clients will have clear privacy expectations which is not necessarily the case with general DoH clients because the choice of balancing functionality against privacy is implementation specific.  </p>
+<p id="rfc.section.1.p.15">Whilst a simple model using HTTP CONNECT to set up RFC7858 sessions would be an option given the privacy centric goal of this specification building on top of DoH has several advantages including clients being able to take advantage of media-types defined in future DoH specifications.  </p>
+<p id="rfc.section.1.p.16">Two issues need to be taken into account when considering how deployable this profile is: </p>
+<p/>
+
+<ol>
+  <li>Interoperability issues in the absence of certain headers might be expected</li>
+  <li>Some HTTPS libraries add several headers by default and so implementors will need to take care to override this behaviour</li>
+</ol>
+
+<p> </p>
+<p id="rfc.section.1.p.18">As with DoH, this document focuses on communication between DNS clients (such as operating system stub resolvers) and recursive resolvers.  </p>
+<h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#terminology" id="terminology">Terminology</a></h1>
+<p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC8174">[RFC8174]</a>.  </p>
+<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#protocol-specification" id="protocol-specification">Protocol specification</a></h1>
+<p id="rfc.section.3.p.1">The protocol specification for DoHPE is that of DoH <a href="#I-D.ietf-doh-dns-over-https">[I-D.ietf-doh-dns-over-https]</a> with the guidelines described in the following sections.  </p>
+<h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> <a href="#selection-of-doh-server" id="selection-of-doh-server">Selection of DoH server</a></h1>
+<p id="rfc.section.3.1.p.1">In order that all connections from a given device appear as similar as possible DoHPE clients SHOULD by default use a system wide setting for the DoH server if one exists and can be discovered.  </p>
+<h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#https-connections" id="https-connections">HTTPS connections</a></h1>
+<p id="rfc.section.3.2.p.1">DoHPE clients SHOULD send queries over connections used solely for DoHPE ('dedicated DoHPE connections') to avoid mixing with other HTTPS traffic that might contain HTTPS messages with client identifiers.  </p>
+<p id="rfc.section.3.2.p.2">TODO: Consider if DoHPE clients SHOULD expose configuration options for users to select if they are willing to fall back to using existing connections for DoHPE queries if issues are encountered with the use of dedicated DoHPE connections.  </p>
+<h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#http-version" id="http-version">HTTP version</a></h1>
+<p id="rfc.section.3.3.p.1">In order that all DoH connections from a device appear as similar as possible DoHPE clients MUST use HTTP/2 <a href="#RFC7540">[RFC7540]</a> or later.  </p>
+<h1 id="rfc.section.3.4"><a href="#rfc.section.3.4">3.4.</a> <a href="#http-method" id="http-method">HTTP method</a></h1>
+<p id="rfc.section.3.4.p.1">TODO: Consider specifying that DoHPE clients SHOULD use either GET or POST to increase similarity? </p>
+<h1 id="rfc.section.3.5"><a href="#rfc.section.3.5">3.5.</a> <a href="#http-headers" id="http-headers">HTTP headers</a></h1>
+<p id="rfc.section.3.5.p.1">This profile obviously requires clients to include all mandatory headers as specified on <a href="#RFC7540">[RFC7540]</a> and other applicable specifications.  <a href="#I-D.ietf-doh-dns-over-https">[I-D.ietf-doh-dns-over-https]</a> also makes recommendations about the "Accept" header which apply to this profile.  </p>
+<h1 id="rfc.section.3.5.1"><a href="#rfc.section.3.5.1">3.5.1.</a> <a href="#user-agent" id="user-agent">User agent</a></h1>
+<p id="rfc.section.3.5.1.p.1">DoHPE clients SHOULD omit the user-agent header. DoHPE clients MAY set this header to 'DoHPE client' if interoperability issues are encountered.  </p>
+<h1 id="rfc.section.3.5.2"><a href="#rfc.section.3.5.2">3.5.2.</a> <a href="#other-headers" id="other-headers">Other headers</a></h1>
+<p id="rfc.section.3.5.2.p.1">DoHPE clients SHOULD omit all other headers.  </p>
+<p id="rfc.section.3.5.2.p.2">TODO: Consider if DoHPE clients should expose configuration options so users can choose to include specific headers if interoperability issues are encountered.  Note that such configuration could serve to allow fingerprinting.  </p>
+<h1 id="rfc.section.3.6"><a href="#rfc.section.3.6">3.6.</a> <a href="#client-authentication" id="client-authentication">Client authentication</a></h1>
+<p id="rfc.section.3.6.p.1">HTTP Cookies MUST NOT be sent by DoHPE clients.  </p>
+<h1 id="rfc.section.3.7"><a href="#rfc.section.3.7">3.7.</a> <a href="#other-http-functionality" id="other-http-functionality">Other HTTP functionality</a></h1>
+<p id="rfc.section.3.7.p.1">TODO: What else should be considered here? </p>
+<h1 id="rfc.section.3.8"><a href="#rfc.section.3.8">3.8.</a> <a href="#countermeasures-to-traffic-analysis" id="countermeasures-to-traffic-analysis">Countermeasures to Traffic Analysis</a></h1>
+<p id="rfc.section.3.8.p.1">This section makes suggestions for measures that can reduce the ability of attackers to infer information pertaining to encrypted client queries by other means (e.g., via an analysis of encrypted traffic size or via monitoring of the unencrypted traffic from a DNS recursive resolver to an authoritative server).  </p>
+<p id="rfc.section.3.8.p.2">DoHPE clients and servers SHOULD implement the following relevant DNS extensions: </p>
+<p/>
+
+<ul>
+  <li>Extension Mechanisms for DNS (EDNS(0)) padding <a href="#RFC7830">[RFC7830]</a>, which allows encrypted queries and responses to hide their size, making analysis of encrypted traffic harder.</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.3.8.p.4">Guidance on padding policies for EDNS(0) is provided in <a href="#I-D.ietf-dprive-padding-policy">[I-D.ietf-dprive-padding-policy]</a>.  </p>
+<p id="rfc.section.3.8.p.5">DoHPE clients SHOULD implement the following relevant DNS extensions: </p>
+<p/>
+
+<ul>
+  <li>Privacy election per <a href="#RFC7871">[RFC7871]</a> ("Client Subnet in DNS Queries").  If a DoHPE client does not include an edns-client-subnet EDNS0 option with SOURCE PREFIX-LENGTH set to 0 in a query, the DNS server may potentially leak client address information to the upstream authoritative DNS servers.  A DoHPE client ought to be able to inform the DNS resolver that it does not want any address information leaked, and the DNS resolver should honor that request.</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#iana-considerations" id="iana-considerations">IANA considerations</a></h1>
+<p id="rfc.section.4.p.1">None </p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#implementations" id="implementations">Implementations</a></h1>
+<p id="rfc.section.5.p.1">TODO: Add details of the next release of Stubby that will support DoHPE.  </p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
+<p id="rfc.section.6.p.1">Thanks to Stephane Bortzmeyer, Ben Schwartz and many others for initial discussions on this topic.  </p>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#changelog" id="changelog">Changelog</a></h1>
+<p id="rfc.section.7.p.1">draft-dickinson-doh-dohpe-00 </p>
+<p/>
+
+<ul>
+  <li>Initial commit</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.references"><a href="#rfc.references">8.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">8.1.</a> Normative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="I-D.ietf-doh-dns-over-https">[I-D.ietf-doh-dns-over-https]</b>
+      </td>
+      <td class="top"><a>Hoffman, P.</a> and <a>P. McManus</a>, "<a href="http://tools.ietf.org/html/draft-ietf-doh-dns-over-https-12">DNS Queries over HTTPS (DoH)</a>", Internet-Draft draft-ietf-doh-dns-over-https-12, June 2018.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7540">[RFC7540]</b>
+      </td>
+      <td class="top"><a>Belshe, M.</a>, <a>Peon, R.</a> and <a>M. Thomson</a>, "<a href="http://tools.ietf.org/html/rfc7540">Hypertext Transfer Protocol Version 2 (HTTP/2)</a>", RFC 7540, DOI 10.17487/RFC7540, May 2015.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC8174">[RFC8174]</b>
+      </td>
+      <td class="top"><a>Leiba, B.</a>, "<a href="http://tools.ietf.org/html/rfc8174">Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a>", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">8.2.</a> Informative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="I-D.ietf-dprive-padding-policy">[I-D.ietf-dprive-padding-policy]</b>
+      </td>
+      <td class="top"><a>Mayrhofer, A.</a>, "<a href="http://tools.ietf.org/html/draft-ietf-dprive-padding-policy-05">Padding Policy for EDNS(0)</a>", Internet-Draft draft-ietf-dprive-padding-policy-05, April 2018.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7830">[RFC7830]</b>
+      </td>
+      <td class="top"><a>Mayrhofer, A.</a>, "<a href="http://tools.ietf.org/html/rfc7830">The EDNS(0) Padding Option</a>", RFC 7830, DOI 10.17487/RFC7830, May 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7844">[RFC7844]</b>
+      </td>
+      <td class="top"><a>Huitema, C.</a>, <a>Mrugalski, T.</a> and <a>S. Krishnan</a>, "<a href="http://tools.ietf.org/html/rfc7844">Anonymity Profiles for DHCP Clients</a>", RFC 7844, DOI 10.17487/RFC7844, May 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7871">[RFC7871]</b>
+      </td>
+      <td class="top"><a>Contavalli, C.</a>, <a>van der Gaast, W.</a>, <a>Lawrence, D.</a> and <a>W. Kumari</a>, "<a href="http://tools.ietf.org/html/rfc7871">Client Subnet in DNS Queries</a>", RFC 7871, DOI 10.17487/RFC7871, May 2016.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.authors">
+  <a href="#rfc.authors">Authors' Addresses</a>
+</h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Sara Dickinson</span> 
+	  <span class="n hidden">
+		<span class="family-name">Dickinson</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Sinodun IT</span>
+	<span class="adr">
+	  <span class="vcardline">Magdalen Centre</span>
+<span class="vcardline">Oxford Science Park</span>
+
+	  <span class="vcardline">
+		<span class="locality">Oxford</span>,  
+		<span class="region"></span>
+		<span class="code">OX4 4GA</span>
+	  </span>
+	  <span class="country-name vcardline">United Kingdom</span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:sara@sinodun.com">sara@sinodun.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Willem Toorop</span> 
+	  <span class="n hidden">
+		<span class="family-name">Toorop</span>
+	  </span>
+	</span>
+	<span class="org vcardline">NLnet Labs</span>
+	<span class="adr">
+	  <span class="vcardline">Science Park 400</span>
+
+	  <span class="vcardline">
+		<span class="locality">Amsterdam</span>,  
+		<span class="region"></span>
+		<span class="code">1098 XH</span>
+	  </span>
+	  <span class="country-name vcardline">The Netherlands</span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:willem@nlnetLabs.nl">willem@nlnetLabs.nl</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>
